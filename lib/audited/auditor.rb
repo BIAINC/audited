@@ -16,6 +16,8 @@ module Audited
 
     CALLBACKS = [:audit_create, :audit_update, :audit_destroy]
 
+    @audit = nil
+
     module ClassMethods
       # == Configuration options
       #
@@ -213,7 +215,7 @@ module Audited
       def write_audit(attrs)
         attrs[:associated] = self.send(audit_associated_with) unless audit_associated_with.nil?
         self.audit_comment = nil
-        run_callbacks(:audit)  { self.audits.create(attrs) } if auditing_enabled
+        run_callbacks(:audit)  { @audit = self.audits.create(attrs) } if auditing_enabled
       end
 
       def require_comment
